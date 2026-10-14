@@ -1,0 +1,14 @@
+#!/bin/sh
+# Load a KWin script that places windows from layout.json as they appear.
+D="$HOME/.local/share/winlayout"
+python3 - "$D" <<'PY'
+import json, sys
+d = sys.argv[1]
+layout = json.load(open(d + "/layout.json"))
+layout = [e for e in layout if e["cls"] != "org.kde.discover"]
+tpl = open(d + "/apply.js.tpl").read()
+open(d + "/apply.js", "w").write(tpl.replace("__LAYOUT__", json.dumps(layout)))
+PY
+qdbus6 org.kde.KWin /Scripting org.kde.kwin.Scripting.unloadScript winlayout-apply >/dev/null
+id=$(qdbus6 org.kde.KWin /Scripting org.kde.kwin.Scripting.loadScript "$D/apply.js" winlayout-apply)
+qdbus6 org.kde.KWin /Scripting/Script$id org.kde.kwin.Script.run >/dev/null

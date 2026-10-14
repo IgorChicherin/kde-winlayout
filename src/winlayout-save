@@ -1,0 +1,10 @@
+#!/bin/sh
+# Snapshot current window layout (desktop, geometry, maximize/fullscreen) to layout.json.
+D="$HOME/.local/share/winlayout"
+S=$(date +"%F %T")
+id=$(qdbus6 org.kde.KWin /Scripting org.kde.kwin.Scripting.loadScript "$D/dump.js" winlayout-dump)
+qdbus6 org.kde.KWin /Scripting/Script$id org.kde.kwin.Script.run >/dev/null
+sleep 1
+journalctl --user --since "$S" --no-pager -o cat | grep WINLAYOUT | tail -1 | sed 's/^.*WINLAYOUT //' > "$D/layout.json.new"
+qdbus6 org.kde.KWin /Scripting org.kde.kwin.Scripting.unloadScript winlayout-dump >/dev/null
+[ -s "$D/layout.json.new" ] && mv "$D/layout.json.new" "$D/layout.json" && echo "saved $(python3 -c 'import json;print(len(json.load(open("'"$D"'/layout.json"))))') windows"
