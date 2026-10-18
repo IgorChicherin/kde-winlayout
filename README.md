@@ -23,14 +23,14 @@ No tools beyond `qdbus6`, `journalctl`, `python3` and `sed` are needed. There is
 ./install.sh
 ```
 
-This copies the scripts to `~/.local/share/winlayout` and adds `~/.config/autostart/winlayout-apply.desktop`.
+This copies `winlayout-save` and `winlayout-apply` to `~/.local/bin`, the data files to `~/.local/share/winlayout`, and adds `~/.config/autostart/winlayout-apply.desktop`.
 
 ## Use
 
 1. Arrange your windows on their desktops the way you want.
-2. Save: `~/.local/share/winlayout/winlayout-save`
+2. Save: `winlayout-save`
 3. Log out and in. The apply script runs at login.
-4. Re-apply any time: `~/.local/share/winlayout/winlayout-apply`
+4. Re-apply any time: `winlayout-apply`
 
 Edit `layout.json` by hand to drop a window you do not want restored.
 Entries for `org.kde.discover` are skipped in `winlayout-apply`; change that filter if you need to.
